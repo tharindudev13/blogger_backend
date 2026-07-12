@@ -2,7 +2,11 @@ import mongoose, { Schema } from "mongoose";
 
 const postSchema = new Schema(
     {
-        author: {
+        authorId: {
+            type: String,
+            required: true
+        },
+        authorName: {
             type: String,
             required: true
         },
@@ -13,6 +17,14 @@ const postSchema = new Schema(
         content: {
             type: String,
             required: true
+        },
+        likes: {
+            type: Array,
+            default: []
+        },
+        comments: {
+            type: Array,
+            default: []
         }
     },
     {
