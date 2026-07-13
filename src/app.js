@@ -7,7 +7,7 @@ import cors from "cors"
 const app = express()
 
 const corsOptions = {
-    origin: 'http://localhost:5173', 
+    origin: FRONTEND_URL, 
     optionsSuccessStatus: 200,
     credentials: true 
 };
