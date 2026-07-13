@@ -1,12 +1,12 @@
 import { User } from "../model/user.model.js"
 import jwt from "jsonwebtoken"
 
-const registerUser = async (req,res) => {
+const registerUser = async (req, res) => {
     try {
-        const {email,password,username,fullName,age} = req.body
+        const { email, password, username, fullName, age } = req.body
 
-        if(!email || !password || !username || !fullName || !age){
-            return res.status(400).json({message: "Some of the required fields are missing!"})
+        if (!email || !password || !username || !fullName || !age) {
+            return res.status(400).json({ message: "Some of the required fields are missing!" })
         }
 
         const exist_email = await User.findOne({
@@ -17,12 +17,12 @@ const registerUser = async (req,res) => {
             username: username.toLowerCase()
         })
 
-        if(exist_email){
-            return res.status(400).json({message: "Email already registerd!"})  
+        if (exist_email) {
+            return res.status(400).json({ message: "Email already registerd!" })
         }
 
-        if(exist_usr){
-            return res.status(400).json({message: "Username Already Taken!"})
+        if (exist_usr) {
+            return res.status(400).json({ message: "Username Already Taken!" })
         }
 
         const user = await User.create({
@@ -40,32 +40,32 @@ const registerUser = async (req,res) => {
                 id: user._id,
                 email: user.email,
                 role: user.role,
-                username: user.username, 
+                username: user.username,
                 name: user.fullName,
                 age: user.age
             }
         })
-        
+
     } catch (error) {
-        res.status(500).json({message: "Internal Server Error",error: error.message})
+        res.status(500).json({ message: "Internal Server Error", error: error.message })
     }
 }
 
-const loginUser = async (req,res) => {
+const loginUser = async (req, res) => {
     try {
-        const {email,password} = req.body
+        const { email, password } = req.body
 
         const user = await User.findOne({
             email: email.toLowerCase()
         })
 
-        if(!user){
-            return res.status(404).json({message: "User not found!"})
+        if (!user) {
+            return res.status(404).json({ message: "User not found!" })
         }
 
         const isMatch = await user.comparePassword(password)
-        if(!isMatch){
-            return res.status(401).json({message: "Invalid Credentials"})
+        if (!isMatch) {
+            return res.status(401).json({ message: "Invalid Credentials" })
         }
 
         const payload = {
@@ -75,25 +75,26 @@ const loginUser = async (req,res) => {
             fullName: user.fullName
         }
 
-        const token = jwt.sign(payload,process.env.ACCESS_TOKEN_SECRET,{
+        const token = jwt.sign(payload, process.env.ACCESS_TOKEN_SECRET, {
             expiresIn: '1h'
         })
 
-        res.cookie('token',token,{
+        res.cookie('token', token, {
             httpOnly: true,
             secure: false,
             sameSite: 'lax',
             maxAge: 3600000
         })
 
-        res.status(200).json({message: "Login Successfull!",
-            user: {id: user._id,email: user.email}
+        res.status(200).json({
+            message: "Login Successfull!",
+            user: { id: user._id, email: user.email, username: user.username }
         })
 
     } catch (error) {
-        res.status(500).json({message: "Internal Server Error",error: error.message})
+        res.status(500).json({ message: "Internal Server Error", error: error.message })
     }
 
 }
 
-export {registerUser,loginUser}
+export { registerUser, loginUser }

@@ -2,8 +2,17 @@ import cookieParser from "cookie-parser"
 import express from "express"
 import authRouter from "./routes/auth.route.js"
 import postRouter from "./routes/post.route.js"
+import cors from "cors"
 
 const app = express()
+
+const corsOptions = {
+    origin: 'http://localhost:5173', 
+    optionsSuccessStatus: 200,
+    credentials: true 
+};
+
+app.use(cors(corsOptions))
 
 app.use(express.json())
 app.use(cookieParser())
