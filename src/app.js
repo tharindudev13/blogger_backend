@@ -3,6 +3,7 @@ import express from "express"
 import authRouter from "./routes/auth.route.js"
 import postRouter from "./routes/post.route.js"
 import cors from "cors"
+import { FRONTEND_URL } from "./config/constants.js"
 
 const app = express()
 
