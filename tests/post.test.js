@@ -31,7 +31,7 @@ vi.mock("../src/middleware/authToken.js", () => {
 
 const { default: app } = await import("../src/app.js")
 
-const DB_URI = "mongodb://vibedigitallk_db_user:uom0310kt@ac-mnaw8gp-shard-00-00.p1kgxhh.mongodb.net:27017,ac-mnaw8gp-shard-00-01.p1kgxhh.mongodb.net:27017,ac-mnaw8gp-shard-00-02.p1kgxhh.mongodb.net:27017/?ssl=true&replicaSet=atlas-pcgehc-shard-0&authSource=admin&appName=edusource"
+const DB_URI = process.env.MONGODB_URI
 const TEST_TITLE_PREFIX = "POST_TEST_"
 const TEST_EMAIL_SUFFIX = "@post-tests.local"
 
