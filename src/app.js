@@ -8,13 +8,12 @@ import { FRONTEND_URL } from "./config/constants.js"
 const app = express()
 
 const corsOptions = {
-    origin: FRONTEND_URL, 
+    origin: [FRONTEND_URL, "http://localhost:5173"],
     optionsSuccessStatus: 200,
     credentials: true 
 };
 
 app.use(cors(corsOptions))
-
 app.use(express.json())
 app.use(cookieParser())
 

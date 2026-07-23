@@ -70,6 +70,10 @@ const commentPost = async (req, res) => {
             return res.status(404).json({ message: "Post not found!" })
         }
 
+        if(!comment){
+            return res.status(400).json({message: "Comment can't be empty"})
+        }
+
         post.comments.push({
             userId: req.user.id,
             comment: comment,
@@ -92,7 +96,13 @@ const deletePost = async (req, res) => {
 
         const post = await Post.findById(postId)
 
-        if (!post.authorId === req.user._id) {
+        if (!post) {
+            return res.status(404).json({ message: "Post not found!" })
+        }
+
+        const currentUserId = req.user?.id || req.user?._id
+
+        if (String(post.authorId) !== String(currentUserId)) {
             return res.status(403).json({ message: "You are not allowed to do this" })
         }
         await post.deleteOne()
@@ -144,7 +154,9 @@ const updatePost = async (req, res) => {
             return res.status(404).json({ message: "Post not found!" })
         }
 
-        if (!post.authorId === req.user._id) {
+        const currentUserId = req.user?.id || req.user?._id
+
+        if (String(post.authorId) !== String(currentUserId)) {
             return res.status(403).json({ message: "You are not allowed to do this" })
         }
 
@@ -172,17 +184,20 @@ const editcomment = async (req, res) => {
             return res.status(404).json({ message: "Post not found!" })
         }
 
-        const commentToUpdate = post.comments.id(commentId)
+        const commentToUpdate = post.comments.find(commentItem => String(commentItem._id) === String(commentId))
 
         if (!commentToUpdate) {
             return res.status(404).json({ message: "Comment not found!" })
         }
 
-        if (!commentToUpdate.userId === req.user._id) {
+        const currentUserId = req.user?.id || req.user?._id
+
+        if (String(commentToUpdate.userId) !== String(currentUserId)) {
             return res.status(403).json({ message: "You are not allowed to do this" })
         }
 
         commentToUpdate.comment = comment
+        post.markModified("comments")
 
         await post.save()
 
@@ -203,17 +218,20 @@ const deletecomment = async (req, res) => {
             return res.status(404).json({ message: "Post not found!" })
         }
 
-        const commentToDelete = post.comments.id(commentId)
+        const commentToDelete = post.comments.find(commentItem => String(commentItem._id) === String(commentId))
 
         if (!commentToDelete) {
             return res.status(404).json({ message: "Comment not found!" })
         }
 
-        if (!commentToDelete.userId === req.user._id) {
+        const currentUserId = req.user?.id || req.user?._id
+
+        if (String(commentToDelete.userId) !== String(currentUserId)) {
             return res.status(403).json({ message: "You are not allowed to do this" })
         }
 
-        commentToDelete.remove()
+        post.comments = post.comments.filter(commentItem => String(commentItem._id) !== String(commentId))
+        post.markModified("comments")
 
         await post.save()
 
