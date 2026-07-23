@@ -13,7 +13,7 @@
   "scripts": {
     "test": "vitest",
     "dev": "nodemon -L src/index.js",
-    "start": "nodemon -L src/index.js"
+    "start": "node -L src/index.js"
   },
   "dependencies": {
     "bcrypt": "^6.0.0",
